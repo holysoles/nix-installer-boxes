@@ -12,6 +12,15 @@ locals {
   no_release = var.release != "true"
 }
 
+packer {
+  required_plugins {
+    vagrant = {
+      version = "~> 1.1"
+      source  = "github.com/hashicorp/vagrant"
+    }
+  }
+}
+
 source "vagrant" "alpine318" {
   add_force    = true
   communicator = "ssh"
