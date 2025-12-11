@@ -21,8 +21,14 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y gpg qemu-system ruby-libvirt libvirt-dev libvirt-daemon-system ebtables libguestfs-tools ruby-fog-libvirt
-          sudo usermod -a -G libvirt "$(whoami)"
-          newgrp libvirt
+      
+      - name: Configure libvirt permissions
+        run: |
+          echo "reconfiguring libvirt so current user has access..."
+          sudo sed -i "s/#unix_sock_group = \"libvirt\"/unix_sock_group = \"$(id -gn)\"/" /etc/libvirt/libvirtd.conf
+          sudo sed -i "s/#auth_unix_rw = \"polkit\"/auth_unix_rw= \"none\"/" /etc/libvirt/libvirtd.conf
+          echo "restarting libvirtd..."
+          sudo systemctl restart libvirtd
 
       - name: Setup Vagrant
         run: |
