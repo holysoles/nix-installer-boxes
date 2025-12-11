@@ -1,0 +1,33 @@
+name: Build Vagrant Boxes
+
+on:
+  release:
+    types: [published]
+
+env:
+  PACKER_VERSION: latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: HCP Auth
+        uses: hashicorp/hcp-auth-action@v0
+        id: auth
+        with:
+          set_access_token: true
+
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@v3
+        with:
+          version: ${{ env.PACKER_VERSION }}
+
+      - name: Build Vagrant Box with Packer
+        run: make build
+        env:
+          VAGRANT_CLOUD_TOKEN: ${{ steps.auth.outputs.access_token }}
+          BOX_VERSION: ${{ github.event.release.tag_name }}
