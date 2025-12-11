@@ -19,6 +19,8 @@ jobs:
         uses: hashicorp/hcp-auth-action@v0
         id: auth
         with:
+          client_id: ${{ env.HCP_CLIENT_ID }}
+          client_secret: ${{ env.HCP_CLIENT_SECRET }}
           set_access_token: true
 
       - name: Setup Packer
