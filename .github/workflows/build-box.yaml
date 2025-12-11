@@ -21,6 +21,8 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y gpg qemu-system ruby-libvirt libvirt-dev libvirt-daemon-system ebtables libguestfs-tools ruby-fog-libvirt
+          sudo usermod -a -G libvirt "$(whoami)"
+          newgrp libvirt
 
       - name: Setup Vagrant
         run: |
