@@ -3,21 +3,29 @@
 default: build
 
 build:
-	for box in $$(find -name *.pkr.hcl); do\
+	@for box in $(shell find . -name "*.pkr.hcl" -print0); do \
 		packer init $$box &&\
 		packer validate $$box &&\
 		packer build -force -on-error=abort $$box ;\
 	done
 
 test:
-	for dir in $$(find ./artifacts -maxdepth 1 -mindepth 1 -type d); do\
+	@for dir in $(shell find ./artifacts -maxdepth 1 -mindepth 1 -type d -print0 | xargs -0); do \
+		workspace="$$(pwd)" &&\
+		cd "$$dir" &&\
 		box=$$(basename $$dir) &&\
-		vagrant box add --force nix-installer "artifacts/$$box/package.box" &&\
+		echo "Testing box artifact: $$box" &&\
 		vagrant up --provider=libvirt &&\
-		vagrant ssh -c "$$(cat ./tests/check-commands.sh)" ;\
+		vagrant ssh -c "$$(cat "$$workspace/tests/check-commands.sh")" output &&\
+		cd "$$workspace" ;\
 	done	
 
 clean:
-	vagrant destroy --force ||\
-	vagrant box remove nix-installer ||\
+	@echo "Cleaning up..." ;\
+	for dir in $(shell find ./artifacts -maxdepth 1 -mindepth 1 -type d -print0 | xargs -0); do \
+		workspace="$$(pwd)" &&\
+		cd "$$dir" &&\
+		vagrant destroy --force &&\
+		cd "$$workspace" ;\
+	done ;\
 	rm -rf artifacts
