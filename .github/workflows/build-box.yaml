@@ -20,7 +20,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo apt update -y
-          sudo apt install -y gpg qemu-system libvirt-daemon-system ebtables libguestfs-tools ruby-fog-libvirt
+          sudo apt install -y gpg qemu-system ruby-libvirt libvirt-daemon-system ebtables libguestfs-tools ruby-fog-libvirt
 
       - name: Setup Vagrant
         run: |
