@@ -24,11 +24,20 @@ jobs:
       
       - name: Configure libvirt permissions
         run: |
-          echo "reconfiguring libvirt so current user has access..."
-          sudo sed -i "s/#unix_sock_group = \"libvirt\"/unix_sock_group = \"$(id -gn)\"/" /etc/libvirt/libvirtd.conf
-          sudo sed -i "s/#auth_unix_rw = \"polkit\"/auth_unix_rw= \"none\"/" /etc/libvirt/libvirtd.conf
+          sudo usermod -a -G kvm,libvirt $USER
+          newgrp libvirt
+          #echo "reconfiguring libvirt so current user has access..."
+          id
+          user_group=$(id -gn)
+          echo "setting group as '$user_group'"
+          sudo sed -i "s/SocketGroup=libvirt/SocketGroup=$user_group/" /lib/systemd/system/libvirtd.socket
+          echo ""
+          cat /lib/systemd/system/libvirtd.socket
+          echo ""
           echo "restarting libvirtd..."
-          sudo systemctl restart libvirtd
+          sudo systemctl daemon-reload
+          sudo systemctl restart libvirtd.service libvirtd.socket
+          ls -aslh /var/run/libvirt/
 
       - name: Setup Vagrant
         run: |
