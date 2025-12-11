@@ -9,7 +9,6 @@ variable "release" {
 
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
-  no_release = var.release != "true"
 }
 
 packer {
@@ -40,10 +39,9 @@ build {
   }
 
   post-processors {
-    #post-processor "vagrant-cloud" {
-    #    no_release = local.no_release
-    #    box_tag = "nix-installer/alpine318"
-    #    version = "${var.version}"
-    #}
+    post-processor "vagrant-cloud" {
+        box_tag = "nix-installer/alpine318"
+        version = "${var.version}"
+    }
   }
 }
