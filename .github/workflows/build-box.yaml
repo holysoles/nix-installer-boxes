@@ -38,14 +38,6 @@ jobs:
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update -y && sudo apt install -y vagrant
 
-      - name: HCP Auth
-        uses: hashicorp/hcp-auth-action@v0
-        id: auth
-        with:
-          client_id: ${{ secrets.HCP_CLIENT_ID }}
-          client_secret: ${{ secrets.HCP_CLIENT_SECRET }}
-          set_access_token: true
-
       - name: Setup Packer
         uses: hashicorp/setup-packer@v3
         with:
@@ -53,13 +45,8 @@ jobs:
 
       - name: Build Vagrant Box with Packer
         run: make
-        continue-on-error: true
         env:
           VAGRANT_CLOUD_TOKEN: ${{ steps.auth.outputs.access_token }}
           BOX_VERSION: ${{ github.event.release.tag_name }}
-
-      - name: Upload GitHub Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: boxes
-          path: artifacts/**/*.box
+          HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
+          HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}

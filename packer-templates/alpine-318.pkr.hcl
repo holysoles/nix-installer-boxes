@@ -39,9 +39,9 @@ build {
   }
 
   post-processors {
-    post-processor "vagrant-cloud" {
-        box_tag = "nix-installer/alpine318"
-        version = "${var.version}"
+    post-processor "vagrant-registry" {
+      box_tag = "nix-installer/alpine318"
+      version = "${var.version}"
     }
   }
 }
