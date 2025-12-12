@@ -26,7 +26,6 @@ source "vagrant" "alpine318" {
   provider     = "libvirt"
   source_path  = "generic/alpine318"
   checksum     = "c477304e422562d11cf56c157c34e8a9710ff0d03f01e4f414f409ecae598184"
-  output_dir   = "artifacts/alpine318"
   template     = "Vagrantfile.tpl"
 }
 

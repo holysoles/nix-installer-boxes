@@ -10,7 +10,7 @@ build:
 	done
 
 test:
-	@for dir in $(shell find ./artifacts -maxdepth 1 -mindepth 1 -type d -print0 | xargs -0); do \
+	@for dir in $(shell find ./output* -maxdepth 1 -mindepth 1 -type d -print0 | xargs -0); do \
 		workspace="$$(pwd)" &&\
 		cd "$$dir" &&\
 		box=$$(basename $$dir) &&\
@@ -22,7 +22,7 @@ test:
 
 clean:
 	@echo "Cleaning up..." ;\
-	for dir in $(shell find ./artifacts -maxdepth 1 -mindepth 1 -type d -print0 | xargs -0); do \
+	for dir in $(shell find ./output* -maxdepth 1 -mindepth 1 -type d -print0 | xargs -0); do \
 		workspace="$$(pwd)" &&\
 		cd "$$dir" &&\
 		vagrant destroy --force &&\
