@@ -41,6 +41,7 @@ build {
     post-processor "vagrant-registry" {
       box_tag = "nix-installer/alpine318"
       version = "${var.version}"
+      architecture  = "amd64"
     }
   }
 }
